@@ -55,14 +55,12 @@ void RedBlackTree::Remove(int data) {
 }
 
 const int RedBlackTree::GetMin() const {
-    if (!root) throw runtime_error("Attempted to get minimum from an empty tree.");
     RBTNode *currentNode = root;
     while (currentNode->left) currentNode = currentNode->left;
     return currentNode->data;
 }
 
 const int RedBlackTree::GetMax() const {
-    if (!root) throw runtime_error("Attempted to get maximum from an empty tree.");
     RBTNode *currentNode = root;
     while (currentNode->right) currentNode = currentNode->right;
     return currentNode->data;
@@ -322,7 +320,6 @@ RBTNode* RedBlackTree::inorderSuccessor(RBTNode* targetNode) {
     }
     return successor;
 }
-
 
 
 // Helper function to handle the removal process, particularly fixing tree properties after node deletion
