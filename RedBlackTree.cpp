@@ -174,14 +174,20 @@ void RedBlackTree::setColor(RBTNode *node, int color) {
     node->color = color;
 }
 
+// Rotate left operation
 void RedBlackTree::rotateLeft(RBTNode *node) {
     RBTNode *rightChild = node->right;
+
+    // Update the right child's left subtree
     node->right = rightChild->left;
     if (rightChild->left != nullptr) {
         rightChild->left->parent = node;
     }
+
+    // Update the parent pointer of the right child
     rightChild->parent = node->parent;
-    
+
+    // Update the parent's child pointer
     if (node->parent == nullptr) {
         root = rightChild;
     } else if (node == node->parent->left) {
@@ -189,18 +195,26 @@ void RedBlackTree::rotateLeft(RBTNode *node) {
     } else {
         node->parent->right = rightChild;
     }
+
+    // Update the left child of the right child
     rightChild->left = node;
     node->parent = rightChild;
 }
 
+// Rotate right operation
 void RedBlackTree::rotateRight(RBTNode *node) {
     RBTNode *leftChild = node->left;
+
+    // Update the left child's right subtree
     node->left = leftChild->right;
     if (leftChild->right != nullptr) {
         leftChild->right->parent = node;
     }
+
+    // Update the parent pointer of the left child
     leftChild->parent = node->parent;
-    
+
+    // Update the parent's child pointer
     if (node->parent == nullptr) {
         root = leftChild;
     } else if (node == node->parent->right) {
@@ -208,9 +222,12 @@ void RedBlackTree::rotateRight(RBTNode *node) {
     } else {
         node->parent->left = leftChild;
     }
+
+    // Update the right child of the left child
     leftChild->right = node;
     node->parent = leftChild;
 }
+
 
 // Fixing tree after insertion to maintain Red-Black properties Zybook 16.3
 void RedBlackTree::fixAfterInsertion(RBTNode *node) {
@@ -378,6 +395,13 @@ void RedBlackTree::adjustDoubleBlack(RBTNode *affectedNode) {
         bool isLeft = (currentNode == parent->left);
         sibling = isLeft ? parent->right : parent->left;
 
+        if (sibling == nullptr) {
+            // No sibling, double black pushed up
+            setColor(parent, DOUBLE_BLACK);
+            currentNode = parent;
+            continue;
+        }
+
         if (getColor(sibling) == COLOR_RED) {
             // Case 1: Red sibling
             setColor(sibling, COLOR_BLACK);
@@ -389,12 +413,12 @@ void RedBlackTree::adjustDoubleBlack(RBTNode *affectedNode) {
         if (areBothChildrenBlack(sibling)) {
             // Case 2: Both children of sibling are black
             setColor(sibling, COLOR_RED);
-            if (getColor(parent) == COLOR_RED) {
-                setColor(parent, COLOR_BLACK);
-            } else {
+            if (getColor(parent) == COLOR_BLACK) {
                 setColor(parent, DOUBLE_BLACK);
                 currentNode = parent; // Move to the parent to handle next level
-                continue;
+            } else {
+                setColor(parent, COLOR_BLACK);
+                currentNode = root; // Exit the loop
             }
         } else {
             // Case 3: At least one red child of sibling
@@ -416,7 +440,11 @@ void RedBlackTree::adjustDoubleBlack(RBTNode *affectedNode) {
             break;
         }
     }
-    setColor(currentNode, COLOR_BLACK); 
+    setColor(currentNode, COLOR_BLACK); // Ensure the node is set to black after adjustments
+    // Clean up if the node was physically removed
+    if (affectedNode != root) {
+        cleanupParentReference(root, affectedNode);
+    }
 }
 
 // Helper to check if both children of a node are black
@@ -424,4 +452,13 @@ bool RedBlackTree::areBothChildrenBlack(RBTNode *node) {
     return getColor(node->left) == COLOR_BLACK && getColor(node->right) == COLOR_BLACK;
 }
 
-
+// Clean up the reference in the parent node after adjustments
+void RedBlackTree::cleanupParentReference(RBTNode *root, RBTNode *node) {
+    RBTNode *parent = find_parent(root, node);
+    if (node == parent->left) {
+        parent->left = nullptr;
+    } else {
+        parent->right = nullptr;
+    }
+    delete node;
+}
