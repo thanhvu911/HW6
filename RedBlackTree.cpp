@@ -11,6 +11,7 @@ RedBlackTree::~RedBlackTree()
 
 RedBlackTree::RedBlackTree() {
 }
+
 // Copy constructor details from https://www.cplusplus.com/articles/y8hv0pDG/
 RedBlackTree::RedBlackTree(const RedBlackTree &other) {
     root = CopyRecur(nullptr, other.root);
@@ -18,7 +19,7 @@ RedBlackTree::RedBlackTree(const RedBlackTree &other) {
 }
 
 // Insertion logic based on the Red-Black Tree properties
-// Insertion method adapted from zyBook section 16.3.1 and https://www.youtube.com/watch?v=UaLIHuR1t8Q (Red-Black Tree Insertion video @ 5:30)
+// Insertion method adapted from zyBook section 16.2 and https://www.youtube.com/watch?v=UaLIHuR1t8Q 
 // Collected 3700000 ID numbers in 3.14336 seconds.
 //Added ID 19566413 in 1e-06 seconds.
 //Added ID 36803526 in 2e-06 seconds.
@@ -211,7 +212,7 @@ void RedBlackTree::rotateRight(RBTNode *node) {
     node->parent = leftChild;
 }
 
-// Fixing tree after insertion to maintain Red-Black properties
+// Fixing tree after insertion to maintain Red-Black properties Zybook 16.3
 void RedBlackTree::fixAfterInsertion(RBTNode *node) {
     // Process up the tree until we reach the root or a black parent node
     while (node != root && node->parent->color == COLOR_RED) {
