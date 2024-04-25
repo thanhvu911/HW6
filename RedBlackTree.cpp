@@ -415,11 +415,7 @@ void RedBlackTree::adjustDoubleBlack(RBTNode *affectedNode) {
             break;
         }
     }
-    setColor(currentNode, COLOR_BLACK); // Ensure the node is set to black after adjustments
-    // Clean up if the node was physically removed
-    if (affectedNode != root) {
-        cleanupParentReference(root, affectedNode);
-    }
+    setColor(currentNode, COLOR_BLACK); 
 }
 
 // Helper to check if both children of a node are black
@@ -427,13 +423,4 @@ bool RedBlackTree::areBothChildrenBlack(RBTNode *node) {
     return getColor(node->left) == COLOR_BLACK && getColor(node->right) == COLOR_BLACK;
 }
 
-// Clean up the reference in the parent node after adjustments
-void RedBlackTree::cleanupParentReference(RBTNode *root, RBTNode *node) {
-    RBTNode *parent = find_parent(root, node);
-    if (node == parent->left) {
-        parent->left = nullptr;
-    } else {
-        parent->right = nullptr;
-    }
-    delete node;
-}
+
