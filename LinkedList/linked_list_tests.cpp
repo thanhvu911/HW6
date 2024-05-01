@@ -107,8 +107,16 @@ void PushFrontTests(){
 
 void InsertTests(){
 	cout << "Insert Test..." << endl;
+    LinkedList<char> list;
+    list.push_back('a');
+    list.push_back('d');
+    list.push_back('z');
 
-	cout << "TESTS MISSING!!!" << endl << endl;
+    assert(char_ll_to_string(&list) == "[a, d, z]");
+    list.insert(1, 'b');
+    assert(char_ll_to_string(&list) == "[a, b, d, z]");
+    cout << "PASSED!" << endl << endl;
+
 }
 
 
